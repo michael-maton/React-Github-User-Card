@@ -1,31 +1,56 @@
 import React from "react";
-import axios from "axios";
 import Card from "./components/Card";
+import fetchUsers from "./services/fetchUsers";
 import "./App.css";
 
 class App extends React.Component {
   state = {
     card: [],
+    textInput: "",
   };
 
   componentDidMount() {
-    axios
-      .get("https://api.github.com/users/michael-maton")
+    fetchUsers("michael-maton")
       .then((res) => {
-        console.log(res);
         this.setState({
-          card: res.data
+          card: res.data,
         });
-        console.log("Card: ", this.state.card)
       })
       .catch((err) => console.log(err));
   }
+
+  handleChange = (e) => {
+    this.setState({
+      textInput: e.target.value,
+    });
+  };
+
+  handleSubmit = (e) => {
+    e.preventDefault();
+    fetchUsers(this.state.textInput)
+      .then((res) => {
+        this.setState({
+          card: res.data,
+        });
+      })
+      .catch((err) => console.log(err));
+  };
 
   render() {
     return (
       <div className="App">
         <h1>GitHub User Card</h1>
-        <Card data={this.state.card}/>
+        <form onSubmit={this.handleSubmit}>
+          <input
+            onChange={this.handleChange}
+            value={this.state.textInput}
+            type="text"
+            name="search"
+            placeholder="enter a username"
+          />
+          <button>Search</button>
+        </form>
+        <Card data={this.state.card} />
       </div>
     );
   }
