@@ -1,0 +1,76 @@
+import React from "react";
+import Card from "./components/Card";
+import fetchUsers from "./services/fetchUsers";
+import fetchFollowers from "./services/fetchFollowers";
+import "./App.css";
+
+class App extends React.Component {
+  state = {
+    card: [],
+    followers: [],
+    textInput: "",
+  };
+
+  componentDidMount() {
+    fetchUsers("michael-maton")
+      .then((res) => {
+        this.setState({
+          card: res.data,
+        });
+      })
+      .catch((err) => console.log(err));
+    fetchFollowers("michael-maton")
+      .then((res) => {
+        this.setState({
+          followers: res.data,
+        });
+        console.log("Followers: ", this.state.followers);
+      })
+      .catch((err) => console.log(err));
+  }
+
+  handleChange = (e) => {
+    this.setState({
+      textInput: e.target.value,
+    });
+  };
+
+  handleSubmit = (e) => {
+    e.preventDefault();
+    fetchUsers(this.state.textInput)
+      .then((res) => {
+        this.setState({
+          card: res.data,
+        });
+      })
+      .catch((err) => console.log(err));
+    fetchFollowers(this.state.textInput)
+      .then((res) => {
+        this.setState({
+          followers: res.data,
+        });
+      })
+      .catch((err) => console.log(err));
+  };
+
+  render() {
+    return (
+      <div className="App">
+        <h1>GitHub User Card</h1>
+        <form onSubmit={this.handleSubmit}>
+          <input
+            onChange={this.handleChange}
+            value={this.state.textInput}
+            type="text"
+            name="search"
+            placeholder="enter a username"
+          />
+          <button>Search</button>
+        </form>
+        <Card data={this.state.card} followers={this.state.followers} />
+      </div>
+    );
+  }
+}
+
+export default App;
