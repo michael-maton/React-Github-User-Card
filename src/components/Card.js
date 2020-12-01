@@ -12,6 +12,14 @@ export default function Card(props) {
             <p>Location: {props.data.location}</p>
             <p>Bio: {props.data.bio}</p>
             <p>Followers: {props.data.followers}</p>
+            {
+                props.followers.map(user => {
+                   return (<div>
+                        <p>{user.login}</p>
+                        <img width="100" src={user.avatar_url} alt={`Avatar for ${user.name}`} key={user.avatar_url}/>
+                    </div>)
+                })
+            }
         </div>
     </CardContainer>
   );

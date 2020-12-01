@@ -1,11 +1,13 @@
 import React from "react";
 import Card from "./components/Card";
 import fetchUsers from "./services/fetchUsers";
+import fetchFollowers from "./services/fetchFollowers";
 import "./App.css";
 
 class App extends React.Component {
   state = {
     card: [],
+    followers: [],
     textInput: "",
   };
 
@@ -15,6 +17,14 @@ class App extends React.Component {
         this.setState({
           card: res.data,
         });
+      })
+      .catch((err) => console.log(err));
+    fetchFollowers("michael-maton")
+      .then((res) => {
+        this.setState({
+          followers: res.data,
+        });
+        console.log("Followers: ", this.state.followers);
       })
       .catch((err) => console.log(err));
   }
@@ -34,6 +44,13 @@ class App extends React.Component {
         });
       })
       .catch((err) => console.log(err));
+    fetchFollowers(this.state.textInput)
+      .then((res) => {
+        this.setState({
+          followers: res.data,
+        });
+      })
+      .catch((err) => console.log(err));
   };
 
   render() {
@@ -50,7 +67,7 @@ class App extends React.Component {
           />
           <button>Search</button>
         </form>
-        <Card data={this.state.card} />
+        <Card data={this.state.card} followers={this.state.followers} />
       </div>
     );
   }
